@@ -41,7 +41,7 @@ function pgl(plugins = []) {
 
   return [
     hypothetical({
-      allowFallthrough: true,
+      allowFallthrough: false,
       files: {
         'chalk': `
           export default null;
