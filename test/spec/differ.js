@@ -59,11 +59,11 @@ describe('diffing', function() {
       expect(results._changed).to.have.keys(['Decision_1', 'LiteralExpression_11bnf50', 'UnaryTests_16zmfgt']);
 
       expect(results._changed['LiteralExpression_11bnf50'].attrs).to.deep.eql({
-        text: { oldValue: 'ausgabe2-change', newValue: 'ausgabe2' }
+        text: { oldValue: 'ausgabe2', newValue: 'ausgabe2-change' }
       });
 
       expect(results._changed['UnaryTests_16zmfgt'].attrs).to.deep.eql({
-        text: { oldValue: 'eingabe1-change', newValue: 'eingabe1' }
+        text: { oldValue: 'eingabe1', newValue: 'eingabe1-change' }
       });
 
       done();
@@ -111,7 +111,7 @@ describe('diffing', function() {
       expect(results._changed).to.have.keys(['Decision_1', 'DecisionTable_0zjc24h']);
 
       expect(results._changed['DecisionTable_0zjc24h'].attrs).to.deep.eql({
-        hitPolicy: { oldValue: 'COLLECT', newValue: 'FIRST' }
+        hitPolicy: { oldValue: 'FIRST', newValue: 'COLLECT' }
       });
 
       done();
