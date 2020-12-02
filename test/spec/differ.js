@@ -140,6 +140,94 @@ describe('diffing', function() {
     });
   });
 
+    it('should discover add and remove row', function(done) {
+
+      var aDiagram = readFileSync('test/fixtures/dmn/add-row/before.dmn', 'utf-8');
+      var bDiagram = readFileSync('test/fixtures/dmn/add-row/after.dmn', 'utf-8');
+  
+      // when
+      testDmnDiff(aDiagram, bDiagram, function(err, results, aDefinitions, bDefinitions) {
+  
+        if (err) {
+          return done(err);
+        }
+  
+        // then
+        expect(results._added).to.have.keys(['DecisionRule_20pnqml']);
+        expect(results._removed).to.have.keys(['DecisionRule_10pnqml']);
+        expect(results._layoutChanged).to.eql({});
+        expect(results._changed).to.have.keys(['Decision_1']);
+  
+        done();
+      });
+  });
+
+  it('should discover change column types', function(done) {
+
+    var aDiagram = readFileSync('test/fixtures/dmn/change-columns-type/before.dmn', 'utf-8');
+    var bDiagram = readFileSync('test/fixtures/dmn/change-columns-type/after.dmn', 'utf-8');
+
+    // when
+    testDmnDiff(aDiagram, bDiagram, function(err, results, aDefinitions, bDefinitions) {
+
+      if (err) {
+        return done(err);
+      }
+
+      // then
+      expect(results._added).to.eql({});
+      expect(results._removed).to.eql({});
+      expect(results._layoutChanged).to.eql({});
+      expect(results._changed).to.have.keys(['Decision_1', 'Input_1', 'InputExpression_1', 'Output_1']);
+
+      done();
+    });
+});
+
+  it('should discover change column types', function(done) {
+
+    var aDiagram = readFileSync('test/fixtures/dmn/change-columns-type/before.dmn', 'utf-8');
+    var bDiagram = readFileSync('test/fixtures/dmn/change-columns-type/after.dmn', 'utf-8');
+
+    // when
+    testDmnDiff(aDiagram, bDiagram, function(err, results, aDefinitions, bDefinitions) {
+
+      if (err) {
+        return done(err);
+      }
+
+      // then
+      expect(results._added).to.eql({});
+      expect(results._removed).to.eql({});
+      expect(results._layoutChanged).to.eql({});
+      expect(results._changed).to.have.keys(['Decision_1', 'Input_1', 'InputExpression_1', 'Output_1']);
+
+      done();
+    });
+});
+
+it('should discover change row annotation', function(done) {
+
+  var aDiagram = readFileSync('test/fixtures/dmn/change-row-anno/before.dmn', 'utf-8');
+  var bDiagram = readFileSync('test/fixtures/dmn/change-row-anno/after.dmn', 'utf-8');
+
+  // when
+  testDmnDiff(aDiagram, bDiagram, function(err, results, aDefinitions, bDefinitions) {
+
+    if (err) {
+      return done(err);
+    }
+
+    // then
+    expect(results._added).to.eql({});
+    expect(results._removed).to.eql({});
+    expect(results._layoutChanged).to.eql({});
+    expect(results._changed).to.have.keys(['Decision_1', 'DecisionRule_10pnqml']);
+
+    done();
+  });
+});
+
 });
 
   describe('api', function() {
@@ -232,5 +320,4 @@ describe('diffing', function() {
   
       done(err, handler, adefs, bdefs);
     });
-  
   }
