@@ -119,6 +119,58 @@ describe('diffing', function() {
     });
   });
 
+  it('should discover change hit policy unique', function(done) {
+
+    var aDiagram = readFileSync('test/fixtures/dmn/change-policy-unique/before.dmn', 'utf-8');
+    var bDiagram = readFileSync('test/fixtures/dmn/change-policy-unique/after.dmn', 'utf-8');
+
+    // when
+    testDmnDiff(aDiagram, bDiagram, function(err, results, aDefinitions, bDefinitions) {
+
+      if (err) {
+        return done(err);
+      }
+
+      // then
+      expect(results._added).to.eql({});
+      expect(results._removed).to.eql({});
+      expect(results._layoutChanged).to.eql({});
+      expect(results._changed).to.have.keys(['DecisionTable_0zjc24h']);
+
+      expect(results._changed['DecisionTable_0zjc24h'].attrs).to.deep.eql({
+        hitPolicy: { oldValue: 'UNIQUE', newValue: 'FIRST' }
+      });
+
+      done();
+    });
+  });
+
+  it('should discover change hit policy unique (reversed)', function(done) {
+
+    var aDiagramRev = readFileSync('test/fixtures/dmn/change-policy-unique/before.dmn', 'utf-8');
+    var bDiagramRev = readFileSync('test/fixtures/dmn/change-policy-unique/after.dmn', 'utf-8');
+
+    // when
+    testDmnDiff(bDiagramRev, aDiagramRev, function(err, results, aDefinitions, bDefinitions) {
+
+      if (err) {
+        return done(err);
+      }
+
+      // then
+      expect(results._added).to.eql({});
+      expect(results._removed).to.eql({});
+      expect(results._layoutChanged).to.eql({});
+      expect(results._changed).to.have.keys(['Decision_1', 'DecisionTable_0zjc24h']);
+
+      expect(results._changed['Decision_1', 'DecisionTable_0zjc24h'].attrs).to.deep.eql({
+        hitPolicy: { oldValue: 'FIRST', newValue: 'UNIQUE'  }
+      });
+
+      done();
+    });
+  });
+
   it('should discover change hit policy aggregation', function(done) {
 
     var aDiagram = readFileSync('test/fixtures/dmn/change-policy-agg/before.dmn', 'utf-8');
@@ -139,6 +191,34 @@ describe('diffing', function() {
 
       expect(results._changed['DecisionTable_0zjc24h'].attrs).to.deep.eql({
         aggregation: { oldValue: undefined, newValue: 'SUM' },
+        hitPolicy: { oldValue: 'PRIORITY', newValue: 'COLLECT' },
+      });
+
+      done();
+    });
+  });
+
+  it('should discover change hit policy aggregation (reverse)', function(done) {
+
+    var aDiagramRev = readFileSync('test/fixtures/dmn/change-policy-agg/before.dmn', 'utf-8');
+    var bDiagramRev = readFileSync('test/fixtures/dmn/change-policy-agg/after.dmn', 'utf-8');
+
+    // when
+    testDmnDiff(bDiagramRev, aDiagramRev, function(err, results, aDefinitions, bDefinitions) {
+
+      if (err) {
+        return done(err);
+      }
+
+      // then
+      expect(results._added).to.eql({});
+      expect(results._removed).to.eql({});
+      expect(results._layoutChanged).to.eql({});
+      expect(results._changed).to.have.keys(['Decision_1', 'DecisionTable_0zjc24h']);
+
+      expect(results._changed['DecisionTable_0zjc24h'].attrs).to.deep.eql({
+        aggregation: { oldValue: 'SUM', newValue: 0 },
+        hitPolicy: { oldValue: 'COLLECT', newValue: 'PRIORITY' },
       });
 
       done();
@@ -233,8 +313,56 @@ describe('diffing', function() {
       expect(results._layoutChanged).to.eql({});
       expect(results._changed).to.have.keys(['Decision_1', 'Input_1', 'InputExpression_1', 'Output_1']);
 
+      expect(results._changed['Input_1'].attrs).to.deep.eql({
+        inputVariable: { oldValue: undefined, newValue: 'inputVar' },
+      });
+
+      expect(results._changed['InputExpression_1'].attrs).to.deep.eql({
+        expressionLanguage: { oldValue: undefined, newValue: 'javascript' },
+        text: { oldValue: '', newValue: 'console.log(\'test\')' },
+      });
+
+      expect(results._changed['Output_1'].attrs).to.deep.eql({
+        typeRef: { oldValue: 'string', newValue: 'boolean' },
+      });
+
       done();
     });
+});
+
+it('should discover change column types (reversed)', function(done) {
+
+  var aDiagramRev = readFileSync('test/fixtures/dmn/change-columns-type/before.dmn', 'utf-8');
+  var bDiagramRev = readFileSync('test/fixtures/dmn/change-columns-type/after.dmn', 'utf-8');
+
+  // when
+  testDmnDiff(bDiagramRev, aDiagramRev, function(err, results, aDefinitions, bDefinitions) {
+
+    if (err) {
+      return done(err);
+    }
+
+    // then
+    expect(results._added).to.eql({});
+    expect(results._removed).to.eql({});
+    expect(results._layoutChanged).to.eql({});
+    expect(results._changed).to.have.keys(['Decision_1', 'Input_1', 'InputExpression_1', 'Output_1']);
+
+    expect(results._changed['Input_1'].attrs).to.deep.eql({
+      inputVariable: { oldValue: 'inputVar' , newValue: 0 },
+    });
+
+    expect(results._changed['InputExpression_1'].attrs).to.deep.eql({
+      expressionLanguage: { oldValue: 'javascript', newValue: 0 },
+      text: { oldValue: 'console.log(\'test\')', newValue: '' },
+    });
+
+    expect(results._changed['Output_1'].attrs).to.deep.eql({
+      typeRef: { oldValue: 'boolean', newValue: 'string' },
+    });
+
+    done();
+  });
 });
 
   it('should discover change column types', function(done) {
