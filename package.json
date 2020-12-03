@@ -1,6 +1,6 @@
 {
   "name": "dmn-js-differ",
-  "version": "0.0.2",
+  "version": "0.0.4",
   "description": "A semantic diffing utility for DMN files",
   "scripts": {
     "all": "run-s lint test",

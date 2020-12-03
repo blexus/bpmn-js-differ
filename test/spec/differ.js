@@ -118,6 +118,58 @@ describe('diffing', function() {
     });
   });
 
+  it('should discover change hit policy aggregation', function(done) {
+
+    var aDiagram = readFileSync('test/fixtures/dmn/change-policy-agg/before.dmn', 'utf-8');
+    var bDiagram = readFileSync('test/fixtures/dmn/change-policy-agg/after.dmn', 'utf-8');
+
+    // when
+    testDmnDiff(aDiagram, bDiagram, function(err, results, aDefinitions, bDefinitions) {
+
+      if (err) {
+        return done(err);
+      }
+
+      // then
+      expect(results._added).to.eql({});
+      expect(results._removed).to.eql({});
+      expect(results._layoutChanged).to.eql({});
+      expect(results._changed).to.have.keys(['Decision_1', 'DecisionTable_0zjc24h']);
+
+      expect(results._changed['DecisionTable_0zjc24h'].attrs).to.deep.eql({
+        aggregation: { oldValue: undefined, newValue: 'SUM' },
+      });
+
+      done();
+    });
+  });
+
+  it('should discover change input variable', function(done) {
+
+    var aDiagram = readFileSync('test/fixtures/dmn/change-input-var/before.dmn', 'utf-8');
+    var bDiagram = readFileSync('test/fixtures/dmn/change-input-var/after.dmn', 'utf-8');
+
+    // when
+    testDmnDiff(aDiagram, bDiagram, function(err, results, aDefinitions, bDefinitions) {
+
+      if (err) {
+        return done(err);
+      }
+
+      // then
+      expect(results._added).to.eql({});
+      expect(results._removed).to.eql({});
+      expect(results._layoutChanged).to.eql({});
+      expect(results._changed).to.have.keys(['Decision_1', 'Input_1']);
+
+      expect(results._changed['Input_1'].attrs).to.deep.eql({
+        inputVariable: { oldValue: undefined, newValue: 'inputVar' },
+      });
+
+      done();
+    });
+  });
+
   it('should discover change columns', function(done) {
 
     var aDiagram = readFileSync('test/fixtures/dmn/change-columns/before.dmn', 'utf-8');
@@ -287,14 +339,15 @@ it('should discover change row annotation', function(done) {
 
 // helpers //////////////////
   function importDmnDiagrams(a, b, done) {
+    var camundaModdle = require('../../resources/camunda.json');
 
-    new DmnModdle().fromXML(a, function(err, adefs) {
+    new DmnModdle({ camunda: camundaModdle }).fromXML(a, function(err, adefs) {
   
       if (err) {
         return done(err);
       }
   
-      new DmnModdle().fromXML(b, function(err, bdefs) {
+      new DmnModdle({ camunda: camundaModdle }).fromXML(b, function(err, bdefs) {
         if (err) {
           return done(err);
         } else {
