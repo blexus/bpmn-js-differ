@@ -10,7 +10,8 @@ import DmnModdle from 'dmn-moddle';
 
 import {
   Differ,
-  diff
+  diff,
+  camundaScheme
 } from '../../lib';
 
 import SimpleChangeHandler from '../../lib/change-handler';
@@ -339,15 +340,13 @@ it('should discover change row annotation', function(done) {
 
 // helpers //////////////////
   function importDmnDiagrams(a, b, done) {
-    var camundaModdle = require('../../resources/camunda.json');
-
-    new DmnModdle({ camunda: camundaModdle }).fromXML(a, function(err, adefs) {
+    new DmnModdle({ camunda: camundaScheme }).fromXML(a, function(err, adefs) {
   
       if (err) {
         return done(err);
       }
   
-      new DmnModdle({ camunda: camundaModdle }).fromXML(b, function(err, bdefs) {
+      new DmnModdle({ camunda: camundaScheme }).fromXML(b, function(err, bdefs) {
         if (err) {
           return done(err);
         } else {
